@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="maven-antrun-" default="main">
   <target name="main">
-    <copy file="src/main/resources/webforj-dev.conf" tofile="C:\Users\RickvanBaalen\development\pingpal\target\classes/webforj.conf" />
+    <copy file="src/main/resources/webforj-dev.conf" tofile="c:\Users\RickvanBaalen\development\pingpal\target\classes/webforj.conf" />
   </target>
 </project>
