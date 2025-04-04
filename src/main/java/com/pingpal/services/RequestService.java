@@ -71,7 +71,8 @@ public class RequestService {
 
         Console console = (Console) ObjectTable.get("CONSOLE");
         console.print(method + " " + fullUrl + " | " + prettyStatus + " | " + prettyTime + " | " + prettyBytes);
-        
+        console.print("Request body: " + body);
+
         return response;
     }
 

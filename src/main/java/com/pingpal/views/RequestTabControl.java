@@ -2,15 +2,17 @@ package com.pingpal.views;
 
 import java.util.HashMap;
 
+import com.pingpal.components.JsonEditor;
 import com.pingpal.components.KeyValue;
 import com.pingpal.components.TabControl;
+import com.webforj.component.optiondialog.OptionDialog;
 
 public class RequestTabControl extends TabControl {
 
     private KeyValue params;
     private RequestAuthentication authentication;
     private KeyValue headers;
-    private RequestBody body;
+    private JsonEditor body;
 
     public RequestTabControl() {
         params = new KeyValue();
@@ -22,7 +24,7 @@ public class RequestTabControl extends TabControl {
         headers = new KeyValue();
         addTab("Headers", headers);
 
-        body = new RequestBody();
+        body = new JsonEditor();
         addTab("Body", body);
     }
 
