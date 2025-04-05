@@ -8,6 +8,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
@@ -28,50 +29,66 @@ public class RequestService {
     private HashMap<String, String> authentication, params, headers;
 
     public HttpResponse<String> send() throws Exception {
-        Builder requestBuilder = HttpRequest.newBuilder();
+        Console console = (Console) ObjectTable.get("CONSOLE");
 
         String fullUrl = endpoint;
         if (method.equalsIgnoreCase("GET") && !params.isEmpty()) fullUrl += "?" + getParamString(params);
-        requestBuilder.uri(new URI(fullUrl));
-        
-        for (Map.Entry<String, String> header : headers.entrySet()) {
-            requestBuilder.header(header.getKey(), header.getValue());
-        }
 
-        if (authentication != null && authentication.containsKey("AUTH_TYPE")) {
-            String type = authentication.get("AUTH_TYPE");
-            switch (type) {
-                case "API_KEY":
-                    String key = authentication.get("KEY");
-                    String value = authentication.get("VALUE");
-                    requestBuilder.header(key, value);
-                    break;
+        HttpResponse<String> response = null;
+
+        try {
+            Builder requestBuilder = HttpRequest.newBuilder();
+            requestBuilder.uri(new URI(fullUrl));
+            
+            for (Map.Entry<String, String> header : headers.entrySet()) {
+                requestBuilder.header(header.getKey(), header.getValue());
             }
+
+            if (authentication != null && authentication.containsKey("AUTH_TYPE")) {
+                String type = authentication.get("AUTH_TYPE");
+                switch (type) {
+                    case "API_KEY":
+                        String key = authentication.get("KEY");
+                        String value = authentication.get("VALUE");
+                        requestBuilder.header(key, value);
+                        break;
+                    case "BASIC":
+                        String username = authentication.get("USERNAME");
+                        String password = authentication.get("PASSWORD");
+                        String credentials = username + ":" + password;
+                        String encoded = Base64.getEncoder().encodeToString(credentials.getBytes());
+                        requestBuilder.header("Authorization", "Basic " + encoded);
+                        break;
+                }
+            }
+
+            if (method.equalsIgnoreCase("POST") || method.equalsIgnoreCase("PUT")) {
+                requestBuilder.method(method, BodyPublishers.ofString(body));
+            } else {
+                requestBuilder.method(method, BodyPublishers.noBody());
+            }
+
+            requestBuilder.timeout(Duration.ofSeconds(10));
+            
+            HttpRequest request = requestBuilder.build();
+
+            Instant start = Instant.now();
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            Instant end = Instant.now();
+            Duration duration = Duration.between(start, end);
+            String prettyTime = DurationFormatter.format(duration);
+
+            String prettyStatus = StatusCodeFormatter.format(response.statusCode());
+
+            byte[] bodyBytes = response.body().getBytes(StandardCharsets.UTF_8);
+            int byteLength = bodyBytes.length;
+            String prettyBytes = BytesFormatter.format(byteLength);
+
+            console.print(method + " " + fullUrl + " | " + prettyStatus + " | " + prettyTime + " | " + prettyBytes);
+        } catch (Exception e) {
+            console.print(method + " " + fullUrl + " | Error: " + e.toString());
+            throw e;
         }
-
-        if (method.equalsIgnoreCase("POST") || method.equalsIgnoreCase("PUT")) {
-            requestBuilder.method(method, BodyPublishers.ofString(body));
-        } else {
-            requestBuilder.method(method, BodyPublishers.noBody());
-        }
-
-        HttpRequest request = requestBuilder.build();
-
-        Instant start = Instant.now();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        Instant end = Instant.now();
-        Duration duration = Duration.between(start, end);
-        String prettyTime = DurationFormatter.format(duration);
-
-        String prettyStatus = StatusCodeFormatter.format(response.statusCode());
-
-        byte[] bodyBytes = response.body().getBytes(StandardCharsets.UTF_8);
-        int byteLength = bodyBytes.length;
-        String prettyBytes = BytesFormatter.format(byteLength);
-
-        Console console = (Console) ObjectTable.get("CONSOLE");
-        console.print(method + " " + fullUrl + " | " + prettyStatus + " | " + prettyTime + " | " + prettyBytes);
-        console.print("Request body: " + body);
 
         return response;
     }

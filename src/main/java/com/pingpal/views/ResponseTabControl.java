@@ -17,7 +17,7 @@ public class ResponseTabControl extends TabControl {
 
     public ResponseTabControl() {
         responseBody = new ResponseBody();
-        addTab("Body", responseBody);
+        addTab("Response", responseBody);
 
         responseHeaders = new ResponseHeaders();
         addTab("Headers", responseHeaders);
@@ -32,6 +32,8 @@ public class ResponseTabControl extends TabControl {
     }
 
     public void setResponse(HttpResponse<String> response, Duration duration) {
+        responseBody.setData(response.body());
+        
         responseCode.setData(response.statusCode());
         responseDuration.setData(duration);
 
@@ -39,13 +41,14 @@ public class ResponseTabControl extends TabControl {
         int byteLength = bodyBytes.length;
         responseBytes.setData(byteLength);
         
-        responseBody.setData(response.body());
         responseHeaders.setData(response.headers());
     }
 
     public void setError(String errorMessage) {
-        responseCode.setError();
         responseBody.setData(errorMessage);
+        responseCode.setError();
+        responseDuration.setData(Duration.ofMillis(0));
+        responseBytes.setData(0);
     }
     
 }

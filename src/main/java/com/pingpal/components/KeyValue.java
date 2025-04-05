@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.UUID;
 
+import com.webforj.component.Expanse;
 import com.webforj.component.field.TextField;
 import com.webforj.component.html.elements.Div;
 import com.webforj.component.icons.Icon;
@@ -39,11 +40,13 @@ public class KeyValue extends Div {
         TextField key = new TextField();
         key.setPlaceholder("Key");
         key.setWidth("100%");
+        key.setExpanse(Expanse.LARGE);
         keys.put(uuid, key);
 
         TextField value = new TextField();
         value.setPlaceholder("Value");
         value.setWidth("100%");
+        value.setExpanse(Expanse.LARGE);
         values.put(uuid, value);
 
         Icon icon = TablerIcon.create("trash");

@@ -68,3 +68,8 @@ pre {
     color: black;
     white-space: nowrap;
 }
+
+div.jsoneditor-outer.has-main-menu-bar {
+    margin-bottom: -26px !important;
+    padding-bottom: 26px !important;
+}
