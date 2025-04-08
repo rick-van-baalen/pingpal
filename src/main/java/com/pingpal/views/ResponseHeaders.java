@@ -2,11 +2,13 @@ package com.pingpal.views;
 
 import java.net.http.HttpHeaders;
 
+import com.pingpal.components.Placeholder;
 import com.webforj.component.html.elements.Div;
 import com.webforj.component.html.elements.Paragraph;
 
 public class ResponseHeaders extends Div {
 
+    private Placeholder placeholder;
     private Paragraph text;
 
     public ResponseHeaders() {
@@ -15,7 +17,11 @@ public class ResponseHeaders extends Div {
         setStyle("overflow-x", "auto");
         setStyle("word-wrap", "break-word");
 
+        placeholder = new Placeholder("No response headers available.");
+        add(placeholder);
+
         text = new Paragraph();
+        text.setVisible(false);
         add(text);
     }
 
@@ -27,7 +33,10 @@ public class ResponseHeaders extends Div {
             content.append(name + ": " + value + "<br>");
         });
         
+        placeholder.setVisible(false);
+
         text.setHtml(content.toString());
+        text.setVisible(true);
     }
 
 }

@@ -2,6 +2,7 @@ package com.pingpal.views;
 
 import java.util.HashMap;
 
+import com.pingpal.components.Placeholder;
 import com.pingpal.helpers.IAuthenticationType;
 import com.webforj.component.Expanse;
 import com.webforj.component.html.elements.Div;
@@ -15,6 +16,7 @@ public class RequestAuthentication extends Div {
     
     private FlexLayout right;
     private ChoiceBox authType;
+    private Placeholder placeholder;
     private ApiKeyAuthentication apiKeyAuthentication;
     private BasicAuthentication basicAuthentication;
     private IAuthenticationType activeAuth;
@@ -27,10 +29,12 @@ public class RequestAuthentication extends Div {
         layout.setJustifyContent(FlexJustifyContent.BETWEEN);
         layout.setSpacing("10px");
         layout.setWidth("100%");
+        layout.setHeight("100%");
         add(layout);
 
         Div left = new Div().setWidth("100%");
         left.setMaxWidth("400px");
+        left.setHeight("100%");
 
         authType = new ChoiceBox("Auth Type");
         authType.add("NO_AUTH", "No Auth");
@@ -46,7 +50,11 @@ public class RequestAuthentication extends Div {
         right.setDirection(FlexDirection.COLUMN);
         right.setSpacing("10px");
         right.setWidth("100%");
+        right.setHeight("100%");
         layout.add(left, right);
+
+        placeholder = new Placeholder("This request does not use any authentication.");
+        right.add(placeholder);
     }
 
     private void onTypeChange(ListSelectEvent event) {
@@ -55,6 +63,8 @@ public class RequestAuthentication extends Div {
         String type = event.getSelectedItem().getKey().toString();
         switch (type) {
             case "API_KEY":
+                placeholder.setVisible(false);
+
                 if (apiKeyAuthentication == null) {
                     apiKeyAuthentication = new ApiKeyAuthentication();
                     right.add(apiKeyAuthentication);
@@ -64,6 +74,8 @@ public class RequestAuthentication extends Div {
                 activeAuth = apiKeyAuthentication;
                 break;
             case "BASIC":
+                placeholder.setVisible(false);
+
                 if (basicAuthentication == null) {
                     basicAuthentication = new BasicAuthentication();
                     right.add(basicAuthentication);
@@ -71,6 +83,9 @@ public class RequestAuthentication extends Div {
 
                 basicAuthentication.setVisible(true);
                 activeAuth = basicAuthentication;
+                break;
+            case "NO_AUTH":
+                placeholder.setVisible(true);
                 break;
         }
     }
