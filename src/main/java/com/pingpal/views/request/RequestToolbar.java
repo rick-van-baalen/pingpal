@@ -1,5 +1,6 @@
-package com.pingpal.views;
+package com.pingpal.views.request;
 
+import com.pingpal.views.Request;
 import com.webforj.component.Composite;
 import com.webforj.component.Expanse;
 import com.webforj.component.button.Button;
@@ -34,7 +35,7 @@ public class RequestToolbar extends Composite<FlexLayout> {
         endpoint = new TextField();
         endpoint.setWidth("100%");
         endpoint.setExpanse(Expanse.LARGE);
-        endpoint.setText("http://cst24.prodin.software:8888/26a63798-4c29-48eb-bca3-59601a9ae863/lsmint/rest/HelloWorld");
+        endpoint.setText("");
 
         Button send = new Button("Send");
         send.setExpanse(Expanse.LARGE);

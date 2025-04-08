@@ -1,9 +1,11 @@
-package com.pingpal.views;
+package com.pingpal.views.request;
 
 import java.util.HashMap;
 
 import com.pingpal.components.Placeholder;
 import com.pingpal.helpers.IAuthenticationType;
+import com.pingpal.views.authentication.ApiKeyAuthentication;
+import com.pingpal.views.authentication.BasicAuthentication;
 import com.webforj.component.Expanse;
 import com.webforj.component.html.elements.Div;
 import com.webforj.component.layout.flexlayout.FlexDirection;

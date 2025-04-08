@@ -1,4 +1,4 @@
-package com.pingpal.views;
+package com.pingpal.views.response;
 
 import com.pingpal.helpers.BytesFormatter;
 import com.webforj.component.html.elements.Div;

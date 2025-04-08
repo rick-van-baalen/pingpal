@@ -1,4 +1,4 @@
-package com.pingpal.services;
+package com.pingpal.helpers;
 
 import java.net.URI;
 import java.net.URLEncoder;
@@ -13,16 +13,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 
-import com.pingpal.helpers.BytesFormatter;
-import com.pingpal.helpers.DurationFormatter;
-import com.pingpal.helpers.StatusCodeFormatter;
 import com.pingpal.views.Console;
 import com.webforj.environment.ObjectTable;
 
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpRequest.Builder;
 
-public class RequestService {
+public class RequestHandler {
     
     private HttpClient client = HttpClient.newHttpClient();
     private String method = "GET", endpoint, body;
@@ -101,32 +98,32 @@ public class RequestService {
         return joiner.toString();
     }
 
-    public RequestService setMethod(String method) {
+    public RequestHandler setMethod(String method) {
         this.method = method;
         return this;
     }
 
-    public RequestService setEndpoint(String endpoint) {
+    public RequestHandler setEndpoint(String endpoint) {
         this.endpoint = endpoint;
         return this;
     }
 
-    public RequestService setAuthenticationData(HashMap<String, String> data) {
+    public RequestHandler setAuthenticationData(HashMap<String, String> data) {
         this.authentication = data;
         return this;
     }
 
-    public RequestService setParams(HashMap<String, String> params) {
+    public RequestHandler setParams(HashMap<String, String> params) {
         this.params = params;
         return this;
     }
 
-    public RequestService setHeaders(HashMap<String, String> headers) {
+    public RequestHandler setHeaders(HashMap<String, String> headers) {
         this.headers = headers;
         return this;
     }
 
-    public RequestService setBody(String body) {
+    public RequestHandler setBody(String body) {
         this.body = body;
         return this;
     }

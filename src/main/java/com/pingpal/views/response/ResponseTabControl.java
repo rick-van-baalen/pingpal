@@ -1,10 +1,11 @@
-package com.pingpal.views;
+package com.pingpal.views.response;
 
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 import com.pingpal.components.TabControl;
+import com.pingpal.views.Console;
 
 public class ResponseTabControl extends TabControl {
 

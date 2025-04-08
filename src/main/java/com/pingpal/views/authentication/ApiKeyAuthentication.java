@@ -1,4 +1,4 @@
-package com.pingpal.views;
+package com.pingpal.views.authentication;
 
 import java.util.HashMap;
 
@@ -28,7 +28,7 @@ public class ApiKeyAuthentication extends Composite<FlexLayout> implements IAuth
 
         value = new TextArea("Value");
         value.setRows(3);
-        value.setValue("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MDAwMDEiLCJhZG1pbiI6IlJWQiIsImlhdCI6MTcyMTk4MDE0OH0.89R__B1YJNTUzNCsg93h-ZcbsSlKHIhmxoQr-iKoVAo");
+        value.setValue("");
         value.setExpanse(Expanse.LARGE);
 
         self.add(key, value);

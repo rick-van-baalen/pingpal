@@ -4,7 +4,11 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.Instant;
 
-import com.pingpal.services.RequestService;
+import com.pingpal.helpers.RequestHandler;
+import com.pingpal.views.request.RequestHeader;
+import com.pingpal.views.request.RequestTabControl;
+import com.pingpal.views.request.RequestToolbar;
+import com.pingpal.views.response.ResponseTabControl;
 import com.webforj.component.Composite;
 import com.webforj.component.Theme;
 import com.webforj.component.html.elements.Div;
@@ -61,7 +65,7 @@ public class Request extends Composite<Div> {
         loading.open();
 
         try {
-            RequestService service = new RequestService()
+            RequestHandler service = new RequestHandler()
                 .setMethod(toolbar.getMethod())
                 .setEndpoint(toolbar.getEndpoint())
                 .setAuthenticationData(requestTabControl.getAuthenticationData())

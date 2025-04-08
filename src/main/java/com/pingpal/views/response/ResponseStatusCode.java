@@ -1,4 +1,4 @@
-package com.pingpal.views;
+package com.pingpal.views.response;
 
 import com.pingpal.helpers.StatusCodeFormatter;
 import com.webforj.component.html.elements.Div;

@@ -1,4 +1,4 @@
-package com.pingpal.views;
+package com.pingpal.views.authentication;
 
 import java.util.HashMap;
 

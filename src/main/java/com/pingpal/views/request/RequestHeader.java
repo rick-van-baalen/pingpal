@@ -1,4 +1,4 @@
-package com.pingpal.views;
+package com.pingpal.views.request;
 
 import com.webforj.component.Composite;
 import com.webforj.component.Expanse;

@@ -118,7 +118,7 @@ html[data-app-theme~='dark-pure'] {
     --dwc-color-default-s: 3%;
 }
 
-pre {
+pre, p {
     margin: 0px;
 }
 

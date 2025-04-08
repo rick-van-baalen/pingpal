@@ -1,4 +1,4 @@
-package com.pingpal.views;
+package com.pingpal.views.response;
 
 import java.net.http.HttpHeaders;
 
