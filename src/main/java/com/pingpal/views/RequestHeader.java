@@ -29,10 +29,6 @@ public class RequestHeader extends Composite<FlexLayout> {
         right.setJustifyContent(FlexJustifyContent.END);
         right.setSpacing("10px");
 
-        Button share = new Button("Share");
-        Button save = new Button("Save");
-        right.add(share, save);
-
         self.add(left, right);
     }
     
