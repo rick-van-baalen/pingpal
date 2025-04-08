@@ -1,5 +1,7 @@
 package com.pingpal.views;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.Instant;
@@ -16,6 +18,7 @@ import com.webforj.component.layout.flexlayout.FlexDirection;
 import com.webforj.component.layout.flexlayout.FlexLayout;
 import com.webforj.component.layout.splitter.Splitter;
 import com.webforj.component.loading.Loading;
+import com.webforj.component.optiondialog.OptionDialog;
 
 public class Request extends Composite<Div> {
 
@@ -60,7 +63,29 @@ public class Request extends Composite<Div> {
     }
 
     public void sendRequest() {
-        if (toolbar.getEndpoint().isBlank()) return;
+        String endpoint = toolbar.getEndpoint().trim();
+
+        if (endpoint.isEmpty()) {
+            OptionDialog.showMessageDialog("Please fill in a valid endpoint.");
+            return;
+        }
+
+        try {
+            URI uri = new URI(endpoint);
+
+            if (uri.getScheme() == null || uri.getHost() == null) {
+                OptionDialog.showMessageDialog("The endpoint must include a valid scheme and host.");
+                return;
+            }
+
+            if (!uri.getScheme().equalsIgnoreCase("http") && !uri.getScheme().equalsIgnoreCase("https")) {
+                OptionDialog.showMessageDialog("Only HTTP and HTTPS URLs are allowed.");
+                return;
+            }
+        } catch (URISyntaxException e) {
+            OptionDialog.showMessageDialog("The endpoint is not a valid URL.");
+            return;
+        }
 
         loading.open();
 
