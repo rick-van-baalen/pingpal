@@ -25,7 +25,11 @@ public class ResponseBody extends Div {
 
         try {
             JsonElement jsonElement = JsonParser.parseString(response);
-            setHtml("<pre>" + JsonFormatter.format(jsonElement) + "</pre>");
+            if (JsonFormatter.format(jsonElement).equals("null")) {
+                setHtml("");
+            } else {
+                setHtml("<pre>" + JsonFormatter.format(jsonElement) + "</pre>");
+            }
         } catch (Exception e) {
             setHtml(response);
         }
