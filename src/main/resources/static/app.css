@@ -193,3 +193,7 @@ div.jsoneditor-outer.has-main-menu-bar {
     margin-bottom: -26px !important;
     padding-bottom: 26px !important;
 }
+
+.request-container.active {
+    background-color: #E7E7E7;
+}
