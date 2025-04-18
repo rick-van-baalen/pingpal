@@ -19,7 +19,9 @@ import com.webforj.component.layout.flexlayout.FlexLayout;
 import com.webforj.component.layout.splitter.Splitter;
 import com.webforj.component.loading.Loading;
 import com.webforj.component.optiondialog.OptionDialog;
+import com.webforj.router.annotation.Route;
 
+@Route(value = "request/:id")
 public class Request extends Composite<Div> {
 
     private Div self = getBoundComponent();

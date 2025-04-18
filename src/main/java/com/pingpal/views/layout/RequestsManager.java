@@ -2,8 +2,10 @@ package com.pingpal.views.layout;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.UUID;
+import java.util.List;
 
+import com.pingpal.models.RequestModel;
+import com.pingpal.services.RequestService;
 import com.webforj.component.Composite;
 import com.webforj.component.html.elements.H3;
 import com.webforj.component.html.elements.Paragraph;
@@ -15,6 +17,8 @@ import com.webforj.component.layout.flexlayout.FlexContentAlignment;
 import com.webforj.component.layout.flexlayout.FlexDirection;
 import com.webforj.component.layout.flexlayout.FlexJustifyContent;
 import com.webforj.component.layout.flexlayout.FlexLayout;
+import com.webforj.router.Router;
+import com.webforj.router.history.Location;
 
 public class RequestsManager extends Composite<FlexLayout> {
 
@@ -40,7 +44,8 @@ public class RequestsManager extends Composite<FlexLayout> {
         Icon icon = TablerIcon.create("plus");
         IconButton button = new IconButton(icon);
         button.onClick(e -> {
-            addRequest("New request");
+            RequestModel model = RequestModel.create("New request");
+            addRequest(model);
         });
         button.setStyle("margin-bottom", "10px");
         self.add(button);
@@ -52,16 +57,15 @@ public class RequestsManager extends Composite<FlexLayout> {
         requestsContainer.setSpacing("10px");
         self.add(requestsContainer);
 
-        for (int i = 0; i < 10; i++) {
-            addRequest("Request " + (i + 1));
+        List<RequestModel> requests = RequestService.get();
+        for (RequestModel request : requests) {
+            addRequest(request);
         }
     }
 
-    private void addRequest(String name) {
-        String uuid = UUID.randomUUID().toString();
-
+    private void addRequest(RequestModel request) {
         FlexLayout requestContainer = new FlexLayout().addClassName("request-container");
-        requestContainer.setUserData("UUID", uuid);
+        requestContainer.setUserData("UUID", request.getId());
         requestContainer.setJustifyContent(FlexJustifyContent.BETWEEN);
         requestContainer.setAlignContent(FlexContentAlignment.CENTER);
         requestContainer.setSpacing("10px");
@@ -69,26 +73,26 @@ public class RequestsManager extends Composite<FlexLayout> {
         requestContainer.setStyle("border", "1px solid #E7E7E7");
         requestContainer.setStyle("cursor", "pointer");
         requestContainer.onClick(e -> {
-            openRequest(requestContainer);
+            setActive(requestContainer);
+            Router.getCurrent().navigate(new Location("/request/" + request.getId()));
         });
+        
         requestsContainer.add(requestContainer);
-        requests.put(uuid, requestContainer);
+        requests.put(request.getId(), requestContainer);
 
-        Paragraph p = new Paragraph(name);
+        Paragraph p = new Paragraph(request.getName());
 
         Icon icon = TablerIcon.create("trash");
         IconButton button = new IconButton(icon);
         button.onClick(e -> {
-            requests.remove(uuid);
+            requests.remove(request.getId());
             requestContainer.destroy();
         });
 
         requestContainer.add(p, button);
-
-        openRequest(requestContainer);
     }
 
-    private void openRequest(FlexLayout activeRequest) {
+    private void setActive(FlexLayout activeRequest) {
         selectedRequest = activeRequest;
         
         Iterator<FlexLayout> it = requests.values().iterator();
