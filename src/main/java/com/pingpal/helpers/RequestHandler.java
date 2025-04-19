@@ -29,7 +29,7 @@ public class RequestHandler {
         Console console = (Console) ObjectTable.get("CONSOLE");
 
         String fullUrl = endpoint;
-        if (method.equalsIgnoreCase("GET") && !params.isEmpty()) fullUrl += "?" + getParamString(params);
+        if (method.equalsIgnoreCase("GET") && params != null && !params.isEmpty()) fullUrl += "?" + getParamString(params);
 
         HttpResponse<String> response = null;
 
@@ -37,10 +37,12 @@ public class RequestHandler {
             Builder requestBuilder = HttpRequest.newBuilder();
             requestBuilder.uri(new URI(fullUrl));
             
-            for (Map.Entry<String, String> header : headers.entrySet()) {
-                requestBuilder.header(header.getKey(), header.getValue());
+            if (headers != null) {
+                for (Map.Entry<String, String> header : headers.entrySet()) {
+                    requestBuilder.header(header.getKey(), header.getValue());
+                }
             }
-
+            
             if (authentication != null && authentication.containsKey("AUTH_TYPE")) {
                 String type = authentication.get("AUTH_TYPE");
                 switch (type) {
@@ -81,9 +83,9 @@ public class RequestHandler {
             int byteLength = bodyBytes.length;
             String prettyBytes = BytesFormatter.format(byteLength);
 
-            console.print(method + " " + fullUrl + " | " + prettyStatus + " | " + prettyTime + " | " + prettyBytes);
+            if (console != null) console.print(method + " " + fullUrl + " | " + prettyStatus + " | " + prettyTime + " | " + prettyBytes);
         } catch (Exception e) {
-            console.print(method + " " + fullUrl + " | Error: " + e.toString());
+            if (console != null) console.print(method + " " + fullUrl + " | Error: " + e.toString());
             throw e;
         }
 

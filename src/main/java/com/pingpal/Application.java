@@ -10,7 +10,7 @@ import com.webforj.annotation.StyleSheet;
   packages = {"com.pingpal.views"},
   defaultFrameName = "PingPal",
   initializeFrame = true,
-  manageFramesVisibility = false,
+  manageFramesVisibility = true,
   debug = true
 )
 @StyleSheet("ws://app.css")

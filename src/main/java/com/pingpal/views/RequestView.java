@@ -7,6 +7,9 @@ import java.time.Duration;
 import java.time.Instant;
 
 import com.pingpal.helpers.RequestHandler;
+import com.pingpal.models.RequestModel;
+import com.pingpal.services.RequestService;
+import com.pingpal.views.layout.AppLayout;
 import com.pingpal.views.request.RequestHeader;
 import com.pingpal.views.request.RequestTabControl;
 import com.pingpal.views.request.RequestToolbar;
@@ -20,9 +23,12 @@ import com.webforj.component.layout.splitter.Splitter;
 import com.webforj.component.loading.Loading;
 import com.webforj.component.optiondialog.OptionDialog;
 import com.webforj.router.annotation.Route;
+import com.webforj.router.event.DidEnterEvent;
+import com.webforj.router.history.ParametersBag;
+import com.webforj.router.observer.DidEnterObserver;
 
-@Route(value = "request/:id")
-public class Request extends Composite<Div> {
+@Route(value = "/request/:id", outlet = AppLayout.class)
+public class RequestView extends Composite<Div> implements DidEnterObserver {
 
     private Div self = getBoundComponent();
     private Loading loading;
@@ -30,10 +36,11 @@ public class Request extends Composite<Div> {
     private RequestToolbar toolbar;
     private RequestTabControl requestTabControl;
     private ResponseTabControl responseTabControl;
-
-    public Request() {
+    
+    public RequestView() {
         self.setWidth("100%");
-        self.setHeight("100%");
+        self.setHeight("calc(100% - 20px)");
+        self.setStyle("padding", "10px");
 
         loading = new Loading("Sending request...");
         loading.getSpinner().setTheme(Theme.PRIMARY);
@@ -111,6 +118,14 @@ public class Request extends Composite<Div> {
         } finally {
             loading.close();
         }
+    }
+
+    @Override
+    public void onDidEnter(DidEnterEvent event, ParametersBag parameters) {
+        String id = parameters.getAlpha("id").orElse("Unknown");
+        RequestModel model = RequestService.getById(id);
+        
+        header.setData(model);
     }
     
 }

@@ -4,7 +4,7 @@ import com.webforj.component.Composite;
 import com.webforj.component.html.elements.Div;
 import com.webforj.router.annotation.Route;
 
-@Route(value = "/")
+@Route
 public class AppLayout extends Composite<Div> {
 
     private Div self = getBoundComponent();
@@ -15,8 +15,7 @@ public class AppLayout extends Composite<Div> {
         self.setHeight("100vh");
         self.setStyle("display", "flex");
         self.setStyle("justify-content", "space-between");
-        self.setStyle("gap", "10px");
-        
+                
         requestsManager = new RequestsManager();
         self.add(requestsManager);
     }

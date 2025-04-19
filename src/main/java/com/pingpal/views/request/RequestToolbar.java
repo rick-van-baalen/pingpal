@@ -1,6 +1,6 @@
 package com.pingpal.views.request;
 
-import com.pingpal.views.Request;
+import com.pingpal.views.RequestView;
 import com.webforj.component.Composite;
 import com.webforj.component.Expanse;
 import com.webforj.component.button.Button;
@@ -17,7 +17,7 @@ public class RequestToolbar extends Composite<FlexLayout> {
     private ChoiceBox methods;
     private TextField endpoint;
 
-    public RequestToolbar(Request request) {
+    public RequestToolbar(RequestView request) {
         self.setWidth("100%");
         self.setAlignment(FlexAlignment.CENTER);
         self.setJustifyContent(FlexJustifyContent.BETWEEN);

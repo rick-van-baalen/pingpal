@@ -28,26 +28,24 @@ public class RequestsManager extends Composite<FlexLayout> {
     private FlexLayout selectedRequest;
 
     public RequestsManager() {
+        self.addClassName("requests-manager");
         self.setDirection(FlexDirection.COLUMN);
         self.setMaxWidth("400px");
         self.setWidth("100%");
         self.setHeight("100%");
         self.setAlignment(FlexAlignment.START);
         self.setPadding("10px");
-        self.setStyle("background-color", "#F7F7F7");
-        self.setStyle("border-radius", "5px");
 
-        H3 heading = new H3("Requests");
-        heading.setStyle("margin-bottom", "10px");
+        H3 heading = new H3("Requests").addClassName("requests-manager-heading");
         self.add(heading);
 
         Icon icon = TablerIcon.create("plus");
         IconButton button = new IconButton(icon);
+        button.addClassName("requests-manager-new-button");
         button.onClick(e -> {
             RequestModel model = RequestModel.create("New request");
             addRequest(model);
         });
-        button.setStyle("margin-bottom", "10px");
         self.add(button);
 
         requestsContainer = new FlexLayout();
@@ -64,14 +62,14 @@ public class RequestsManager extends Composite<FlexLayout> {
     }
 
     private void addRequest(RequestModel request) {
+        RequestService.add(request);
+        
         FlexLayout requestContainer = new FlexLayout().addClassName("request-container");
         requestContainer.setUserData("UUID", request.getId());
         requestContainer.setJustifyContent(FlexJustifyContent.BETWEEN);
         requestContainer.setAlignContent(FlexContentAlignment.CENTER);
         requestContainer.setSpacing("10px");
         requestContainer.setPadding("10px");
-        requestContainer.setStyle("border", "1px solid #E7E7E7");
-        requestContainer.setStyle("cursor", "pointer");
         requestContainer.onClick(e -> {
             setActive(requestContainer);
             Router.getCurrent().navigate(new Location("/request/" + request.getId()));

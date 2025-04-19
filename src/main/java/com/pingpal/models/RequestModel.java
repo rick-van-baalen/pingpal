@@ -1,7 +1,5 @@
 package com.pingpal.models;
 
-import java.util.UUID;
-
 public class RequestModel {
     
     private String id;
@@ -25,7 +23,6 @@ public class RequestModel {
 
     public static RequestModel create(String name) {
         RequestModel request = new RequestModel();
-        request.setId(UUID.randomUUID().toString());
         request.setName(name);
         return request;
     }

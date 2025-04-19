@@ -1,12 +1,9 @@
 package com.pingpal.views.request;
 
+import com.pingpal.models.RequestModel;
 import com.webforj.component.Composite;
-import com.webforj.component.Expanse;
-import com.webforj.component.button.Button;
-import com.webforj.component.button.ButtonTheme;
 import com.webforj.component.html.elements.Div;
 import com.webforj.component.layout.flexlayout.FlexAlignment;
-import com.webforj.component.layout.flexlayout.FlexContentAlignment;
 import com.webforj.component.layout.flexlayout.FlexJustifyContent;
 import com.webforj.component.layout.flexlayout.FlexLayout;
 import com.webforj.component.text.Label;
@@ -14,6 +11,8 @@ import com.webforj.component.text.Label;
 public class RequestHeader extends Composite<FlexLayout> {
 
     private FlexLayout self = getBoundComponent();
+    private Label label;
+    private RequestModel model;
 
     public RequestHeader() {
         self.setWidth("100%");
@@ -21,7 +20,7 @@ public class RequestHeader extends Composite<FlexLayout> {
         self.setJustifyContent(FlexJustifyContent.BETWEEN);
 
         Div left = new Div().setWidth("100%");
-        Label label = new Label("Folder / Request 1");
+        label = new Label();
         left.add(label);
 
         FlexLayout right = new FlexLayout().setWidth("100%");
@@ -30,6 +29,15 @@ public class RequestHeader extends Composite<FlexLayout> {
         right.setSpacing("10px");
 
         self.add(left, right);
+    }
+
+    private void redraw() {
+        label.setText(model.getName());
+    }
+
+    public void setData(RequestModel model) {
+        this.model = model;
+        redraw();
     }
     
 }

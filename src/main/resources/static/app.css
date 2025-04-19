@@ -194,6 +194,26 @@ div.jsoneditor-outer.has-main-menu-bar {
     padding-bottom: 26px !important;
 }
 
+.requests-manager {
+    background-color: var(--dwc-color-primary);
+}
+
+.requests-manager-heading {
+    margin-bottom: 10px;
+}
+
+.requests-manager-new-button {
+    margin-bottom: 10px;
+}
+
+.request-container {
+    cursor: pointer;
+    border: 1px solid white;
+    background-color: white;
+    border-radius: 5px;
+}
+
 .request-container.active {
     background-color: #E7E7E7;
+    border-color: #E7E7E7;
 }
