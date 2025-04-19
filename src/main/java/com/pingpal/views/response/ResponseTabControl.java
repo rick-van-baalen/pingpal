@@ -51,5 +51,13 @@ public class ResponseTabControl extends TabControl {
         responseDuration.setData(Duration.ofMillis(0));
         responseBytes.setData(0);
     }
+
+    public void clear() {
+        responseBody.clear();
+        responseCode.clear();
+        responseDuration.clear();
+        responseBytes.clear();
+        responseHeaders.clear();
+    }
     
 }

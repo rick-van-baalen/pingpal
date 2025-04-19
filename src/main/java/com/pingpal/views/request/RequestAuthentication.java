@@ -22,6 +22,7 @@ public class RequestAuthentication extends Div {
     private ApiKeyAuthentication apiKeyAuthentication;
     private BasicAuthentication basicAuthentication;
     private IAuthenticationType activeAuth;
+    private HashMap<String, String> data;
 
     public RequestAuthentication() {
         setWidth("100%");
@@ -63,6 +64,12 @@ public class RequestAuthentication extends Div {
         if (activeAuth != null) activeAuth.setVisible(false);
 
         String type = event.getSelectedItem().getKey().toString();
+        showAuthType(type);
+    }
+
+    private void showAuthType(String type) {
+        if (activeAuth != null) activeAuth.setVisible(false);
+
         switch (type) {
             case "API_KEY":
                 placeholder.setVisible(false);
@@ -73,6 +80,8 @@ public class RequestAuthentication extends Div {
                 }
 
                 apiKeyAuthentication.setVisible(true);
+                apiKeyAuthentication.setData(data);
+
                 activeAuth = apiKeyAuthentication;
                 break;
             case "BASIC":
@@ -84,9 +93,11 @@ public class RequestAuthentication extends Div {
                 }
 
                 basicAuthentication.setVisible(true);
+                basicAuthentication.setData(data);
+
                 activeAuth = basicAuthentication;
                 break;
-            case "NO_AUTH":
+            default:
                 placeholder.setVisible(true);
                 break;
         }
@@ -95,6 +106,20 @@ public class RequestAuthentication extends Div {
     public HashMap<String, String> getData() {
         if (activeAuth == null) return null;
         return activeAuth.getData();
+    }
+
+    public void setData(HashMap<String, String> data) {
+        this.data = data;
+
+        if (data == null || !data.containsKey("type")) {
+            authType.selectKey("NO_AUTH");
+            showAuthType("NO_AUTH");
+            return;
+        }
+
+        String type = data.get("type").toString();
+        authType.selectKey(type);
+        showAuthType(type);
     }
 
 }

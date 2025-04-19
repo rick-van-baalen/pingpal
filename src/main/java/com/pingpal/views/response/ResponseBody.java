@@ -5,9 +5,11 @@ import com.google.gson.JsonParser;
 import com.pingpal.components.Placeholder;
 import com.pingpal.helpers.JsonFormatter;
 import com.webforj.component.html.elements.Div;
+import com.webforj.component.html.elements.Paragraph;
 
 public class ResponseBody extends Div {
 
+    private Paragraph paragraph;
     private Placeholder placeholder;
 
     public ResponseBody() {
@@ -16,23 +18,33 @@ public class ResponseBody extends Div {
         setStyle("overflow-x", "auto");
         setStyle("word-wrap", "break-word");
 
+        paragraph = new Paragraph();
+        paragraph.setVisible(false);
+
         placeholder = new Placeholder("No response body available.");
-        add(placeholder);
+        add(paragraph, placeholder);
     }
 
     public void setData(String response) {
         placeholder.setVisible(false);
+        paragraph.setVisible(true);
 
         try {
             JsonElement jsonElement = JsonParser.parseString(response);
             if (JsonFormatter.format(jsonElement).equals("null")) {
-                setHtml("");
+                paragraph.setHtml("");
             } else {
-                setHtml("<pre>" + JsonFormatter.format(jsonElement) + "</pre>");
+                paragraph.setHtml("<pre>" + JsonFormatter.format(jsonElement) + "</pre>");
             }
         } catch (Exception e) {
-            setHtml(response);
+            paragraph.setHtml(response);
         }
+    }
+
+    public void clear() {
+        paragraph.setText("");
+        paragraph.setVisible(false);
+        placeholder.setVisible(true);
     }
     
 }

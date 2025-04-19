@@ -21,5 +21,9 @@ public class ResponseDuration extends Div {
         String prettyTime = DurationFormatter.format(duration);
         time.setText(prettyTime);
     }
+
+    public void clear() {
+        time.setText("-");
+    }
     
 }

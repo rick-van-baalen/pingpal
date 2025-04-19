@@ -5,7 +5,7 @@ import java.util.HashMap;
 import com.pingpal.components.JsonEditor;
 import com.pingpal.components.KeyValue;
 import com.pingpal.components.TabControl;
-import com.webforj.component.optiondialog.OptionDialog;
+import com.pingpal.models.RequestModel;
 
 public class RequestTabControl extends TabControl {
 
@@ -28,7 +28,14 @@ public class RequestTabControl extends TabControl {
         addTab("Body", body);
     }
 
-    public HashMap<String, String> getAuthenticationData() {
+    public void setData(RequestModel model) {
+        params.setData(model.getParams());
+        authentication.setData(model.getAuthData());
+        headers.setData(model.getHeaders());
+        body.setData(model.getBody());
+    }
+
+    public HashMap<String, String> getAuthData() {
         return authentication.getData();
     }
 
@@ -40,7 +47,7 @@ public class RequestTabControl extends TabControl {
         return headers.getData();
     }
 
-    public String getBody() {
+    public HashMap<String, Object> getBody() {
         return body.getData();
     }
     

@@ -24,6 +24,7 @@ public class RequestHandler {
     private HttpClient client = HttpClient.newHttpClient();
     private String method = "GET", endpoint, body;
     private HashMap<String, String> authentication, params, headers;
+    private Boolean consoleLogging = true;
 
     public HttpResponse<String> send() throws Exception {
         Console console = (Console) ObjectTable.get("CONSOLE");
@@ -83,9 +84,9 @@ public class RequestHandler {
             int byteLength = bodyBytes.length;
             String prettyBytes = BytesFormatter.format(byteLength);
 
-            if (console != null) console.print(method + " " + fullUrl + " | " + prettyStatus + " | " + prettyTime + " | " + prettyBytes);
+            if (consoleLogging && console != null) console.print(method + " " + fullUrl + " | " + prettyStatus + " | " + prettyTime + " | " + prettyBytes);
         } catch (Exception e) {
-            if (console != null) console.print(method + " " + fullUrl + " | Error: " + e.toString());
+            if (consoleLogging && console != null) console.print(method + " " + fullUrl + " | Error: " + e.toString());
             throw e;
         }
 
@@ -127,6 +128,11 @@ public class RequestHandler {
 
     public RequestHandler setBody(String body) {
         this.body = body;
+        return this;
+    }
+
+    public RequestHandler setConsoleLogging(Boolean enabled) {
+        this.consoleLogging = enabled;
         return this;
     }
 

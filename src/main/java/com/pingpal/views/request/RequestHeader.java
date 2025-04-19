@@ -1,7 +1,12 @@
 package com.pingpal.views.request;
 
+import java.util.function.Consumer;
+
 import com.pingpal.models.RequestModel;
+import com.pingpal.services.RequestService;
 import com.webforj.component.Composite;
+import com.webforj.component.button.Button;
+import com.webforj.component.button.event.ButtonClickEvent;
 import com.webforj.component.html.elements.Div;
 import com.webforj.component.layout.flexlayout.FlexAlignment;
 import com.webforj.component.layout.flexlayout.FlexJustifyContent;
@@ -12,6 +17,7 @@ public class RequestHeader extends Composite<FlexLayout> {
 
     private FlexLayout self = getBoundComponent();
     private Label label;
+    private Consumer<RequestModel> onSave;
     private RequestModel model;
 
     public RequestHeader() {
@@ -28,11 +34,23 @@ public class RequestHeader extends Composite<FlexLayout> {
         right.setJustifyContent(FlexJustifyContent.END);
         right.setSpacing("10px");
 
+        Button save = new Button("Save");
+        save.onClick(this::acceptSave);
+        right.add(save);
+
         self.add(left, right);
     }
 
+    private void acceptSave(ButtonClickEvent event) {
+        onSave.accept(model);
+    }
+
+    public void onSave(Consumer<RequestModel> onSave) {
+        this.onSave = onSave;
+    }
+
     private void redraw() {
-        label.setText(model.getName());
+        if (model.getName() != null) label.setText(model.getName());
     }
 
     public void setData(RequestModel model) {

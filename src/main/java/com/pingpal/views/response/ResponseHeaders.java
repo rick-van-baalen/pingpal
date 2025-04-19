@@ -39,4 +39,10 @@ public class ResponseHeaders extends Div {
         text.setVisible(true);
     }
 
+    public void clear() {
+        text.setText("");
+        text.setVisible(false);
+        placeholder.setVisible(true);
+    }
+
 }

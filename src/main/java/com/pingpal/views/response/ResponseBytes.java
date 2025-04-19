@@ -18,5 +18,9 @@ public class ResponseBytes extends Div {
     public void setData(int bytes) {
         label.setText(BytesFormatter.format(bytes));
     }
+
+    public void clear() {
+        label.setText("-");
+    }
     
 }

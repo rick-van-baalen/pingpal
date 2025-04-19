@@ -33,5 +33,13 @@ public class ResponseStatusCode extends Div {
         statusCode.setText("Error");
         setStyle("background-color", "red");
     }
+
+    public void clear() {
+        statusCode.setText("-");
+        statusCode.setStyle("color", "initial");
+
+        setStyle("background-color", "initial");
+        setStyle("border-color", "#d7d7d7");
+    }
     
 }

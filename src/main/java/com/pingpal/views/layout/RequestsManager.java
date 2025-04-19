@@ -44,7 +44,8 @@ public class RequestsManager extends Composite<FlexLayout> {
         button.addClassName("requests-manager-new-button");
         button.onClick(e -> {
             RequestModel model = RequestModel.create("New request");
-            addRequest(model);
+            model = RequestService.add(model);
+            buildRequest(model);
         });
         self.add(button);
 
@@ -57,13 +58,11 @@ public class RequestsManager extends Composite<FlexLayout> {
 
         List<RequestModel> requests = RequestService.get();
         for (RequestModel request : requests) {
-            addRequest(request);
+            buildRequest(request);
         }
     }
 
-    private void addRequest(RequestModel request) {
-        RequestService.add(request);
-        
+    private void buildRequest(RequestModel request) {
         FlexLayout requestContainer = new FlexLayout().addClassName("request-container");
         requestContainer.setUserData("UUID", request.getId());
         requestContainer.setJustifyContent(FlexJustifyContent.BETWEEN);
@@ -72,7 +71,7 @@ public class RequestsManager extends Composite<FlexLayout> {
         requestContainer.setPadding("10px");
         requestContainer.onClick(e -> {
             setActive(requestContainer);
-            Router.getCurrent().navigate(new Location("/request/" + request.getId()));
+            Router.getCurrent().navigate(new Location("/requests/" + request.getId()));
         });
         
         requestsContainer.add(requestContainer);
@@ -85,6 +84,7 @@ public class RequestsManager extends Composite<FlexLayout> {
         button.onClick(e -> {
             requests.remove(request.getId());
             requestContainer.destroy();
+            RequestService.delete(request.getId());
         });
 
         requestContainer.add(p, button);

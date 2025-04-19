@@ -34,10 +34,24 @@ public class BasicAuthentication extends Composite<FlexLayout> implements IAuthe
     @Override
     public HashMap<String, String> getData() {
         HashMap<String, String> data = new HashMap<String, String>();
-        data.put("AUTH_TYPE", "BASIC");
-        data.put("USERNAME", username.getText().trim());
-        data.put("PASSWORD", password.getText().trim());
+        data.put("type", "BASIC");
+        data.put("username", username.getText().trim());
+        data.put("password", password.getText().trim());
         return data;
+    }
+
+    public void setData(HashMap<String, String> data) {
+        if (data != null && data.containsKey("username")) {
+            username.setText(data.get("username").toString());
+        } else {
+            username.setText("");
+        }
+        
+        if (data != null && data.containsKey("password")) {
+            password.setText(data.get("password").toString());
+        } else {
+            password.setText("");
+        }
     }
 
     @Override

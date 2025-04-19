@@ -1,5 +1,6 @@
 package com.pingpal.views.request;
 
+import com.pingpal.models.RequestModel;
 import com.pingpal.views.RequestView;
 import com.webforj.component.Composite;
 import com.webforj.component.Expanse;
@@ -16,6 +17,7 @@ public class RequestToolbar extends Composite<FlexLayout> {
     private FlexLayout self = getBoundComponent();
     private ChoiceBox methods;
     private TextField endpoint;
+    private RequestModel model;
 
     public RequestToolbar(RequestView request) {
         self.setWidth("100%");
@@ -43,6 +45,16 @@ public class RequestToolbar extends Composite<FlexLayout> {
         send.onClick(e -> request.sendRequest());
 
         self.add(methods, endpoint, send);
+    }
+
+    private void redraw() {
+        if (model.getMethod() != null) methods.selectKey(model.getMethod());
+        if (model.getUrl() != null) endpoint.setText(model.getUrl());
+    }
+
+    public void setData(RequestModel model) {
+        this.model = model;
+        redraw();
     }
 
     public String getMethod() {

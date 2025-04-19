@@ -27,7 +27,7 @@ public class Console extends Div {
 
     public void print(String message) {
         placeholder.setVisible(false);
-
+        
         String timestamp = LocalDateTime.now().format(formatter);
 
         Paragraph text = new Paragraph();

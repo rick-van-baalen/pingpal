@@ -37,10 +37,24 @@ public class ApiKeyAuthentication extends Composite<FlexLayout> implements IAuth
     @Override
     public HashMap<String, String> getData() {
         HashMap<String, String> data = new HashMap<String, String>();
-        data.put("AUTH_TYPE", "API_KEY");
-        data.put("KEY", key.getText().trim());
-        data.put("VALUE", value.getText().trim());
+        data.put("type", "API_KEY");
+        data.put("key", key.getText().trim());
+        data.put("value", value.getText().trim());
         return data;
+    }
+
+    public void setData(HashMap<String, String> data) {
+        if (data != null && data.containsKey("key")) {
+            key.setText(data.get("key").toString());
+        } else {
+            key.setText("");
+        }
+        
+        if (data != null && data.containsKey("value")) {
+            value.setText(data.get("value").toString());
+        } else {
+            value.setText("");
+        }
     }
 
     @Override

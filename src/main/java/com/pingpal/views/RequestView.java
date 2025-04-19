@@ -5,7 +5,10 @@ import java.net.URISyntaxException;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import com.google.gson.Gson;
 import com.pingpal.helpers.RequestHandler;
 import com.pingpal.models.RequestModel;
 import com.pingpal.services.RequestService;
@@ -14,6 +17,7 @@ import com.pingpal.views.request.RequestHeader;
 import com.pingpal.views.request.RequestTabControl;
 import com.pingpal.views.request.RequestToolbar;
 import com.pingpal.views.response.ResponseTabControl;
+import com.webforj.App;
 import com.webforj.component.Composite;
 import com.webforj.component.Theme;
 import com.webforj.component.html.elements.Div;
@@ -22,12 +26,14 @@ import com.webforj.component.layout.flexlayout.FlexLayout;
 import com.webforj.component.layout.splitter.Splitter;
 import com.webforj.component.loading.Loading;
 import com.webforj.component.optiondialog.OptionDialog;
+import com.webforj.router.Router;
 import com.webforj.router.annotation.Route;
 import com.webforj.router.event.DidEnterEvent;
+import com.webforj.router.event.NavigateEvent;
 import com.webforj.router.history.ParametersBag;
 import com.webforj.router.observer.DidEnterObserver;
 
-@Route(value = "/request/:id", outlet = AppLayout.class)
+@Route(value = "/requests/:id<[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}>", outlet = AppLayout.class)
 public class RequestView extends Composite<Div> implements DidEnterObserver {
 
     private Div self = getBoundComponent();
@@ -36,6 +42,7 @@ public class RequestView extends Composite<Div> implements DidEnterObserver {
     private RequestToolbar toolbar;
     private RequestTabControl requestTabControl;
     private ResponseTabControl responseTabControl;
+    private RequestModel model;
     
     public RequestView() {
         self.setWidth("100%");
@@ -63,12 +70,26 @@ public class RequestView extends Composite<Div> implements DidEnterObserver {
         self.add(splitter);
 
         header = new RequestHeader();
+        header.onSave(this::onSaveModel);
+
         toolbar = new RequestToolbar(this);
         requestTabControl = new RequestTabControl();
         top.add(header, toolbar, requestTabControl);
 
         responseTabControl = new ResponseTabControl();
         bottom.add(responseTabControl);
+
+        Router.getCurrent().addNavigateListener(this::onNavigate);
+    }
+
+    private void onSaveModel(RequestModel model) {
+        model.setMethod(toolbar.getMethod());
+        model.setUrl(toolbar.getEndpoint());
+        model.setParams(requestTabControl.getParams());
+        model.setHeaders(requestTabControl.getHeaders());
+        model.setAuthData(requestTabControl.getAuthData());
+        model.setBody(requestTabControl.getBody());
+        RequestService.update(model);
     }
 
     public void sendRequest() {
@@ -99,13 +120,15 @@ public class RequestView extends Composite<Div> implements DidEnterObserver {
         loading.open();
 
         try {
+            String json = new Gson().toJson(requestTabControl.getBody());
+
             RequestHandler service = new RequestHandler()
                 .setMethod(toolbar.getMethod())
                 .setEndpoint(toolbar.getEndpoint())
-                .setAuthenticationData(requestTabControl.getAuthenticationData())
+                .setAuthenticationData(requestTabControl.getAuthData())
                 .setParams(requestTabControl.getParams())
                 .setHeaders(requestTabControl.getHeaders())
-                .setBody(requestTabControl.getBody());
+                .setBody(json);
             
             Instant start = Instant.now();
             HttpResponse<String> response = service.send();
@@ -120,12 +143,40 @@ public class RequestView extends Composite<Div> implements DidEnterObserver {
         }
     }
 
+    private void loadModel(String id) {
+        if (id == null) {
+            App.console().error("ID: null");
+            return;
+        }
+
+        if (model != null && model.getId().equals(id)) return;
+
+        model = RequestService.getById(id);
+        header.setData(model);
+        toolbar.setData(model);
+        requestTabControl.setData(model);
+        responseTabControl.clear();
+    }
+
     @Override
     public void onDidEnter(DidEnterEvent event, ParametersBag parameters) {
-        String id = parameters.getAlpha("id").orElse("Unknown");
-        RequestModel model = RequestService.getById(id);
-        
-        header.setData(model);
+        String id = parameters.get("id").orElse(null);
+        loadModel(id);
+    }
+
+    private void onNavigate(NavigateEvent event) {
+        String id = extractIdFromUrl(event.getLocation().getFullURI());
+        loadModel(id);
+    }
+
+    private String extractIdFromUrl(String url) {
+        String pattern = "/requests/([0-9a-fA-F\\-]+)";
+
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(url);
+
+        if (m.find()) return m.group(1);
+        return null;
     }
     
 }
