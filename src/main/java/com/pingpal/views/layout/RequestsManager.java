@@ -7,6 +7,8 @@ import java.util.List;
 import com.pingpal.models.RequestModel;
 import com.pingpal.services.RequestService;
 import com.webforj.component.Composite;
+import com.webforj.component.button.ButtonTheme;
+import com.webforj.component.html.elements.Div;
 import com.webforj.component.html.elements.H3;
 import com.webforj.component.html.elements.Paragraph;
 import com.webforj.component.icons.Icon;
@@ -17,6 +19,7 @@ import com.webforj.component.layout.flexlayout.FlexContentAlignment;
 import com.webforj.component.layout.flexlayout.FlexDirection;
 import com.webforj.component.layout.flexlayout.FlexJustifyContent;
 import com.webforj.component.layout.flexlayout.FlexLayout;
+import com.webforj.component.optiondialog.InputDialog;
 import com.webforj.router.Router;
 import com.webforj.router.history.Location;
 
@@ -26,6 +29,7 @@ public class RequestsManager extends Composite<FlexLayout> {
     private FlexLayout requestsContainer;
     private HashMap<String, FlexLayout> requests = new HashMap<String, FlexLayout>();
     private FlexLayout selectedRequest;
+    private InputDialog newDialog, editDialog;
 
     public RequestsManager() {
         self.addClassName("requests-manager");
@@ -43,9 +47,19 @@ public class RequestsManager extends Composite<FlexLayout> {
         IconButton button = new IconButton(icon);
         button.addClassName("requests-manager-new-button");
         button.onClick(e -> {
-            RequestModel model = RequestModel.create("New request");
-            model = RequestService.add(model);
-            buildRequest(model);
+            if (newDialog == null) {
+                newDialog = new InputDialog("What is the name of your new request?", "New request", InputDialog.InputType.TEXT);
+                newDialog.setFirstButtonText("Save");
+                newDialog.setSecondButtonText("Cancel");
+                newDialog.setFirstButtonTheme(ButtonTheme.PRIMARY);
+            }
+
+            String requestName = newDialog.show();
+            if (requestName != null && !requestName.isEmpty()) {
+                RequestModel model = RequestModel.create(requestName);
+                model = RequestService.add(model);
+                buildRequest(model);
+            }
         });
         self.add(button);
 
@@ -66,28 +80,53 @@ public class RequestsManager extends Composite<FlexLayout> {
         FlexLayout requestContainer = new FlexLayout().addClassName("request-container");
         requestContainer.setUserData("UUID", request.getId());
         requestContainer.setJustifyContent(FlexJustifyContent.BETWEEN);
-        requestContainer.setAlignContent(FlexContentAlignment.CENTER);
+        requestContainer.setAlignment(FlexAlignment.CENTER);
         requestContainer.setSpacing("10px");
-        requestContainer.setPadding("10px");
-        requestContainer.onClick(e -> {
-            setActive(requestContainer);
-            Router.getCurrent().navigate(new Location("/requests/" + request.getId()));
-        });
-        
+
         requestsContainer.add(requestContainer);
         requests.put(request.getId(), requestContainer);
 
-        Paragraph p = new Paragraph(request.getName());
+        Div left = new Div().setWidth("100%").addClassName("request-container-left");
+        left.onClick(e -> {
+            setActive(requestContainer);
+            Router.getCurrent().navigate(new Location("/requests/" + request.getId()));
+        });
+
+        FlexLayout right = new FlexLayout().setSpacing("10px").addClassName("request-container-right");
+        requestContainer.add(left, right);
+
+        Paragraph title = new Paragraph(request.getName());
+        left.add(title);
 
         Icon icon = TablerIcon.create("trash");
-        IconButton button = new IconButton(icon);
-        button.onClick(e -> {
+        IconButton removeButton = new IconButton(icon);
+        removeButton.onClick(e -> {
             requests.remove(request.getId());
             requestContainer.destroy();
             RequestService.delete(request.getId());
         });
 
-        requestContainer.add(p, button);
+        icon = TablerIcon.create("edit");
+        IconButton editButton = new IconButton(icon);
+        editButton.onClick(e -> {
+            if (editDialog == null) {
+                editDialog = new InputDialog("", "Change request name", InputDialog.InputType.TEXT);
+                editDialog.setFirstButtonText("Save");
+                editDialog.setSecondButtonText("Cancel");
+                editDialog.setFirstButtonTheme(ButtonTheme.PRIMARY);
+            }
+
+            editDialog.setMessage("What is the new name for request '" + request.getName().trim() + "'?");
+
+            String requestName = editDialog.show();
+            if (requestName != null && !requestName.isEmpty()) {
+                request.setName(requestName);
+                title.setText(requestName);
+                RequestService.update(request);
+            }
+        });
+
+        right.add(editButton, removeButton);
     }
 
     private void setActive(FlexLayout activeRequest) {

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.pingpal.helpers.RequestHandler;
 import com.pingpal.models.RequestModel;
@@ -48,7 +49,8 @@ public class RequestService {
             headers.put("Content-Type", "application/json");
             service.setHeaders(headers);
 
-            String body = new Gson().toJson(model);
+            Gson gson = new GsonBuilder().serializeNulls().create();
+            String body = gson.toJson(model);
             service.setBody(body);
 
             HttpResponse<String> response = service.send();
@@ -72,7 +74,8 @@ public class RequestService {
             headers.put("Content-Type", "application/json");
             service.setHeaders(headers);
 
-            String body = new Gson().toJson(model);
+            Gson gson = new GsonBuilder().serializeNulls().create();
+            String body = gson.toJson(model);
             service.setBody(body);
 
             HttpResponse<String> response = service.send();

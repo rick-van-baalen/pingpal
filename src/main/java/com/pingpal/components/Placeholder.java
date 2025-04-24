@@ -23,7 +23,7 @@ public class Placeholder extends Composite<FlexLayout> {
     }
 
     public void setVisible(Boolean visible) {
-        self.setVisible(visible);
+        self.setStyle("display", visible ? "flex" : "none");
     }
     
 }

@@ -48,8 +48,13 @@ public class RequestToolbar extends Composite<FlexLayout> {
     }
 
     private void redraw() {
-        if (model.getMethod() != null) methods.selectKey(model.getMethod());
-        if (model.getUrl() != null) endpoint.setText(model.getUrl());
+        if (model.getMethod() != null) {
+            methods.selectKey(model.getMethod());
+        } else {
+            methods.selectKey("GET");
+        }
+        
+        endpoint.setText(model.getUrl() != null ? model.getUrl() : "");
     }
 
     public void setData(RequestModel model) {

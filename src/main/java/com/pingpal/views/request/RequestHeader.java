@@ -50,7 +50,7 @@ public class RequestHeader extends Composite<FlexLayout> {
     }
 
     private void redraw() {
-        if (model.getName() != null) label.setText(model.getName());
+        label.setText(model.getName() != null ? model.getName() : "");
     }
 
     public void setData(RequestModel model) {

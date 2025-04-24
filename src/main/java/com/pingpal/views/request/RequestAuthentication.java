@@ -99,6 +99,7 @@ public class RequestAuthentication extends Div {
                 break;
             default:
                 placeholder.setVisible(true);
+                activeAuth = null;
                 break;
         }
     }
