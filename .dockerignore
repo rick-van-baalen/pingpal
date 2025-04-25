@@ -1,0 +1,10 @@
+# Negeren
+*.class
+*.log
+.idea/
+.vscode/
+.DS_Store
+
+# target/ negeren, behalve het WAR bestand
+target/*
+!target/pingpal-1.0.war
