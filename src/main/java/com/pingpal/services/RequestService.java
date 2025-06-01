@@ -14,20 +14,24 @@ import com.webforj.component.optiondialog.OptionDialog;
 
 public class RequestService {
     
+    private static final String BASE_URL = "http://localhost:9090";
+    private static final String TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZXZfYWRtaW4iLCJpYXQiOjE3NDg3Njg0MjgsImV4cCI6MTc0ODc3MjAyOH0.UWIOVnCUAkj1zA7ZlEM-MPGH42IrvuKo0BnX_QwYLBA";
+
     public static List<RequestModel> get() {
         try {
             RequestHandler service = new RequestHandler()
                 .setMethod("GET")
-                .setEndpoint("http://localhost:8080/requests")
+                .setEndpoint(BASE_URL + "/requests")
                 .setConsoleLogging(false);
 
             HashMap<String, String> headers = new HashMap<String, String>();
             headers.put("Accept", "application/json");
             headers.put("Content-Type", "application/json");
+            headers.put("Authorization", "Bearer " + TOKEN);
             service.setHeaders(headers);
 
             HttpResponse<String> response = service.send();
-
+            OptionDialog.showMessageDialog("Code: " + response.statusCode() + " | Body: " + response.body());
             Type listType = new TypeToken<List<RequestModel>>() {}.getType();
             return new Gson().fromJson(response.body(), listType);
         } catch (Exception e) {
@@ -41,12 +45,13 @@ public class RequestService {
         try {
             RequestHandler service = new RequestHandler()
                 .setMethod("POST")
-                .setEndpoint("http://localhost:8080/requests")
+                .setEndpoint(BASE_URL + "/requests")
                 .setConsoleLogging(false);
 
             HashMap<String, String> headers = new HashMap<String, String>();
             headers.put("Accept", "application/json");
             headers.put("Content-Type", "application/json");
+            headers.put("Authorization", "Bearer " + TOKEN);
             service.setHeaders(headers);
 
             Gson gson = new GsonBuilder().serializeNulls().create();
@@ -66,12 +71,13 @@ public class RequestService {
         try {
             RequestHandler service = new RequestHandler()
                 .setMethod("PUT")
-                .setEndpoint("http://localhost:8080/requests/" + model.getId())
+                .setEndpoint(BASE_URL + "/requests/" + model.getId())
                 .setConsoleLogging(false);
 
             HashMap<String, String> headers = new HashMap<String, String>();
             headers.put("Accept", "application/json");
             headers.put("Content-Type", "application/json");
+            headers.put("Authorization", "Bearer " + TOKEN);
             service.setHeaders(headers);
 
             Gson gson = new GsonBuilder().serializeNulls().create();
@@ -91,12 +97,13 @@ public class RequestService {
         try {
             RequestHandler service = new RequestHandler()
                 .setMethod("DELETE")
-                .setEndpoint("http://localhost:8080/requests/" + id)
+                .setEndpoint(BASE_URL + "/requests/" + id)
                 .setConsoleLogging(false);
 
             HashMap<String, String> headers = new HashMap<String, String>();
             headers.put("Accept", "application/json");
             headers.put("Content-Type", "application/json");
+            headers.put("Authorization", "Bearer " + TOKEN);
             service.setHeaders(headers);
 
             service.send();
@@ -111,12 +118,13 @@ public class RequestService {
         try {
             RequestHandler service = new RequestHandler()
                 .setMethod("GET")
-                .setEndpoint("http://localhost:8080/requests/" + id)
+                .setEndpoint(BASE_URL + "/requests/" + id)
                 .setConsoleLogging(false);
 
             HashMap<String, String> headers = new HashMap<String, String>();
             headers.put("Accept", "application/json");
             headers.put("Content-Type", "application/json");
+            headers.put("Authorization", "Bearer " + TOKEN);
             service.setHeaders(headers);
 
             HttpResponse<String> response = service.send();
