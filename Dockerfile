@@ -1,16 +1,12 @@
-FROM maven:3.9.9-eclipse-temurin-24-alpine AS builder
+FROM tomcat:10.1-jdk21
 
-WORKDIR /app
+# Remove default apps (optional)
+RUN rm -rf /usr/local/tomcat/webapps/*
 
-COPY pom.xml .
-COPY src ./src
+# Copy WAR into Tomcat's webapps directory
+COPY target/pingpal-1.0.war /usr/local/tomcat/webapps/ROOT.war
 
-RUN mvn clean package -DskipTests
-
-FROM jetty:12-jdk24-alpine
-
-WORKDIR /var/lib/jetty
-
-COPY --from=builder /app/target/pingpal-1.0.war webapps/root.war
-
+# Expose port (default is 8080)
 EXPOSE 8080
+
+CMD ["catalina.sh", "run"]
