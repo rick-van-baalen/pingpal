@@ -29,6 +29,7 @@ public class RequestsManager extends Composite<FlexLayout> {
     private HashMap<String, FlexLayout> requests = new HashMap<String, FlexLayout>();
     private FlexLayout selectedRequest;
     private InputDialog newDialog, editDialog;
+    private RequestService requestService;
 
     public RequestsManager() {
         self.addClassName("requests-manager");
@@ -38,6 +39,8 @@ public class RequestsManager extends Composite<FlexLayout> {
         self.setHeight("100%");
         self.setAlignment(FlexAlignment.START);
         self.setPadding("10px");
+
+        if (requestService == null) requestService = new RequestService();
 
         H3 heading = new H3("Requests").addClassName("requests-manager-heading");
         self.add(heading);
@@ -56,7 +59,7 @@ public class RequestsManager extends Composite<FlexLayout> {
             String requestName = newDialog.show();
             if (requestName != null && !requestName.isEmpty()) {
                 RequestModel model = RequestModel.create(requestName);
-                model = RequestService.add(model);
+                model = requestService.add(model);
                 buildRequest(model);
             }
         });
@@ -69,7 +72,7 @@ public class RequestsManager extends Composite<FlexLayout> {
         requestsContainer.setSpacing("10px");
         self.add(requestsContainer);
 
-        List<RequestModel> requests = RequestService.get();
+        List<RequestModel> requests = requestService.get();
         for (RequestModel request : requests) {
             buildRequest(request);
         }
@@ -102,7 +105,7 @@ public class RequestsManager extends Composite<FlexLayout> {
         removeButton.onClick(e -> {
             requests.remove(request.getId());
             requestContainer.destroy();
-            RequestService.delete(request.getId());
+            requestService.delete(request.getId());
         });
 
         icon = TablerIcon.create("edit");
@@ -121,7 +124,7 @@ public class RequestsManager extends Composite<FlexLayout> {
             if (requestName != null && !requestName.isEmpty()) {
                 request.setName(requestName);
                 title.setText(requestName);
-                RequestService.update(request);
+                requestService.update(request);
             }
         });
 

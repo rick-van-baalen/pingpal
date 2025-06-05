@@ -2,24 +2,31 @@ package com.pingpal.services;
 
 import java.lang.reflect.Type;
 import java.net.http.HttpResponse;
+import java.time.Instant;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.pingpal.helpers.Env;
 import com.pingpal.helpers.RequestHandler;
 import com.pingpal.models.RequestModel;
+import com.webforj.App;
 import com.webforj.component.optiondialog.OptionDialog;
 
 public class RequestService {
     
-    private static final String BASE_URL = "http://localhost:9090";
-    private static final String TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZXZfYWRtaW4iLCJpYXQiOjE3NDg3Njg0MjgsImV4cCI6MTc0ODc3MjAyOH0.UWIOVnCUAkj1zA7ZlEM-MPGH42IrvuKo0BnX_QwYLBA";
+    private String token;
+    private Instant tokenExpiry;
 
-    public static List<RequestModel> get() {
+    public List<RequestModel> get() {
         try {
-            RequestHandler service = new RequestHandler()
+            final String BASE_URL = Env.get("PINGPAL_URL");
+
+            RequestHandler request = new RequestHandler()
                 .setMethod("GET")
                 .setEndpoint(BASE_URL + "/requests")
                 .setConsoleLogging(false);
@@ -27,11 +34,13 @@ public class RequestService {
             HashMap<String, String> headers = new HashMap<String, String>();
             headers.put("Accept", "application/json");
             headers.put("Content-Type", "application/json");
-            headers.put("Authorization", "Bearer " + TOKEN);
-            service.setHeaders(headers);
+            headers.put("Authorization", "Bearer " + getToken());
+            request.setHeaders(headers);
 
-            HttpResponse<String> response = service.send();
-            OptionDialog.showMessageDialog("Code: " + response.statusCode() + " | Body: " + response.body());
+            App.console().log("Endpoint: " + BASE_URL + "/requests | Token: " + getToken(), true);
+            HttpResponse<String> response = request.send();
+            App.console().log("Response: " + response.statusCode() + " " + response.body(), true);
+
             Type listType = new TypeToken<List<RequestModel>>() {}.getType();
             return new Gson().fromJson(response.body(), listType);
         } catch (Exception e) {
@@ -41,9 +50,11 @@ public class RequestService {
         return null;
     }
 
-    public static RequestModel add(RequestModel model) {
+    public RequestModel add(RequestModel model) {
         try {
-            RequestHandler service = new RequestHandler()
+            final String BASE_URL = Env.get("PINGPAL_URL");
+
+            RequestHandler request = new RequestHandler()
                 .setMethod("POST")
                 .setEndpoint(BASE_URL + "/requests")
                 .setConsoleLogging(false);
@@ -51,14 +62,14 @@ public class RequestService {
             HashMap<String, String> headers = new HashMap<String, String>();
             headers.put("Accept", "application/json");
             headers.put("Content-Type", "application/json");
-            headers.put("Authorization", "Bearer " + TOKEN);
-            service.setHeaders(headers);
+            headers.put("Authorization", "Bearer " + getToken());
+            request.setHeaders(headers);
 
             Gson gson = new GsonBuilder().serializeNulls().create();
             String body = gson.toJson(model);
-            service.setBody(body);
+            request.setBody(body);
 
-            HttpResponse<String> response = service.send();
+            HttpResponse<String> response = request.send();
             return new Gson().fromJson(response.body(), RequestModel.class);
         } catch (Exception e) {
             OptionDialog.showMessageDialog(e.toString());
@@ -67,9 +78,11 @@ public class RequestService {
         return null;
     }
     
-    public static RequestModel update(RequestModel model) {
+    public RequestModel update(RequestModel model) {
         try {
-            RequestHandler service = new RequestHandler()
+            final String BASE_URL = Env.get("PINGPAL_URL");
+
+            RequestHandler request = new RequestHandler()
                 .setMethod("PUT")
                 .setEndpoint(BASE_URL + "/requests/" + model.getId())
                 .setConsoleLogging(false);
@@ -77,14 +90,14 @@ public class RequestService {
             HashMap<String, String> headers = new HashMap<String, String>();
             headers.put("Accept", "application/json");
             headers.put("Content-Type", "application/json");
-            headers.put("Authorization", "Bearer " + TOKEN);
-            service.setHeaders(headers);
+            headers.put("Authorization", "Bearer " + getToken());
+            request.setHeaders(headers);
 
             Gson gson = new GsonBuilder().serializeNulls().create();
             String body = gson.toJson(model);
-            service.setBody(body);
+            request.setBody(body);
 
-            HttpResponse<String> response = service.send();
+            HttpResponse<String> response = request.send();
             return new Gson().fromJson(response.body(), RequestModel.class);
         } catch (Exception e) {
             OptionDialog.showMessageDialog(e.toString());
@@ -93,9 +106,11 @@ public class RequestService {
         return null;
     }
 
-    public static RequestModel delete(String id) {
+    public RequestModel delete(String id) {
         try {
-            RequestHandler service = new RequestHandler()
+            final String BASE_URL = Env.get("PINGPAL_URL");
+
+            RequestHandler request = new RequestHandler()
                 .setMethod("DELETE")
                 .setEndpoint(BASE_URL + "/requests/" + id)
                 .setConsoleLogging(false);
@@ -103,10 +118,10 @@ public class RequestService {
             HashMap<String, String> headers = new HashMap<String, String>();
             headers.put("Accept", "application/json");
             headers.put("Content-Type", "application/json");
-            headers.put("Authorization", "Bearer " + TOKEN);
-            service.setHeaders(headers);
+            headers.put("Authorization", "Bearer " + getToken());
+            request.setHeaders(headers);
 
-            service.send();
+            request.send();
         } catch (Exception e) {
             OptionDialog.showMessageDialog(e.toString());
         }
@@ -114,9 +129,11 @@ public class RequestService {
         return null;
     }
 
-    public static RequestModel getById(String id) {
+    public RequestModel getById(String id) {
         try {
-            RequestHandler service = new RequestHandler()
+            final String BASE_URL = Env.get("PINGPAL_URL");
+
+            RequestHandler request = new RequestHandler()
                 .setMethod("GET")
                 .setEndpoint(BASE_URL + "/requests/" + id)
                 .setConsoleLogging(false);
@@ -124,10 +141,10 @@ public class RequestService {
             HashMap<String, String> headers = new HashMap<String, String>();
             headers.put("Accept", "application/json");
             headers.put("Content-Type", "application/json");
-            headers.put("Authorization", "Bearer " + TOKEN);
-            service.setHeaders(headers);
+            headers.put("Authorization", "Bearer " + getToken());
+            request.setHeaders(headers);
 
-            HttpResponse<String> response = service.send();
+            HttpResponse<String> response = request.send();
             RequestModel model = new Gson().fromJson(response.body(), RequestModel.class);
             
             return model;
@@ -136,6 +153,66 @@ public class RequestService {
         }
 
         return null;
+    }
+
+    private String getToken() throws Exception {
+        if (token != null && tokenExpiry != null && Instant.now().isBefore(tokenExpiry.minusSeconds(30))) {
+            return token;
+        }
+
+        final String BASE_URL = Env.get("PINGPAL_URL");
+        final String username = Env.get("PINGPAL_USERNAME");
+        final String password = Env.get("PINGPAL_PASSWORD");
+
+        Map<String, String> bodyMap = new HashMap<>();
+        bodyMap.put("username", username);
+        bodyMap.put("password", password);
+
+        Gson gson = new GsonBuilder().create();
+        String jsonBody = gson.toJson(bodyMap);
+
+        RequestHandler request = new RequestHandler()
+            .setMethod("POST")
+            .setEndpoint(BASE_URL + "/auth/login")
+            .setConsoleLogging(false)
+            .setBody(jsonBody);
+
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("Accept", "application/json");
+        headers.put("Content-Type", "application/json");
+        request.setHeaders(headers);
+
+        HttpResponse<String> response = request.send();
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Login failed: " + response.body());
+        }
+
+        Map<String, Object> result = gson.fromJson(response.body(), Map.class);
+        String newToken = (String) result.get("token");
+
+        if (newToken == null) {
+            throw new RuntimeException("No token in login response");
+        }
+
+        this.token = newToken;
+        this.tokenExpiry = extractExpiryFromJwt(newToken);
+        
+        return this.token;
+    }
+
+    private Instant extractExpiryFromJwt(String jwt) {
+        try {
+            String[] parts = jwt.split("\\.");
+            if (parts.length != 3) throw new IllegalArgumentException("Invalid JWT");
+
+            String payloadJson = new String(Base64.getUrlDecoder().decode(parts[1]));
+            Map<String, Object> payload = new Gson().fromJson(payloadJson, Map.class);
+            Double exp = (Double) payload.get("exp");
+
+            return Instant.ofEpochSecond(exp.longValue());
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse JWT expiry", e);
+        }
     }
 
 }

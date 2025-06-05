@@ -43,6 +43,7 @@ public class RequestView extends Composite<Div> implements DidEnterObserver {
     private RequestTabControl requestTabControl;
     private ResponseTabControl responseTabControl;
     private RequestModel model;
+    private RequestService requestService;
     
     public RequestView() {
         self.setWidth("100%");
@@ -83,13 +84,15 @@ public class RequestView extends Composite<Div> implements DidEnterObserver {
     }
 
     private void onSaveModel(RequestModel model) {
+        if (requestService == null) requestService = new RequestService();
+
         model.setMethod(toolbar.getMethod());
         model.setUrl(toolbar.getEndpoint());
         model.setParams(requestTabControl.getParams());
         model.setHeaders(requestTabControl.getHeaders());
         model.setAuthData(requestTabControl.getAuthData());
         model.setBody(requestTabControl.getBody());
-        RequestService.update(model);
+        requestService.update(model);
     }
 
     public void sendRequest() {
@@ -151,7 +154,9 @@ public class RequestView extends Composite<Div> implements DidEnterObserver {
 
         if (model != null && model.getId().equals(id)) return;
 
-        model = RequestService.getById(id);
+        if (requestService == null) requestService = new RequestService();
+        model = requestService.getById(id);
+        
         header.setData(model);
         toolbar.setData(model);
         requestTabControl.setData(model);

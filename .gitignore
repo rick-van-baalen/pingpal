@@ -66,3 +66,6 @@ Thumbs.db
 
 # Mac system files
 .DS_Store
+
+# Secrets
+.env
