@@ -41,7 +41,7 @@ public class ResponseBody extends Div {
                 paragraph.setHtml("<pre>" + formattedJson + "</pre>");
             }
         } catch (Exception e) {
-            paragraph.setHtml(response);
+            paragraph.setHtml(escapeHtml(response));
         }
     }
 
@@ -49,6 +49,14 @@ public class ResponseBody extends Div {
         paragraph.setText("");
         paragraph.setVisible(false);
         placeholder.setVisible(true);
+    }
+
+    public String escapeHtml(String input) {
+        return input.replace("&", "&amp;")
+                    .replace("<", "&lt;")
+                    .replace(">", "&gt;")
+                    .replace("\"", "&quot;")
+                    .replace("'", "&#39;");
     }
     
 }

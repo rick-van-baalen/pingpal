@@ -6,6 +6,7 @@ import com.pingpal.components.Placeholder;
 import com.pingpal.helpers.IAuthenticationType;
 import com.pingpal.views.authentication.ApiKeyAuthentication;
 import com.pingpal.views.authentication.BasicAuthentication;
+import com.pingpal.views.authentication.BearerAuthentication;
 import com.webforj.component.Expanse;
 import com.webforj.component.html.elements.Div;
 import com.webforj.component.layout.flexlayout.FlexDirection;
@@ -21,6 +22,7 @@ public class RequestAuthentication extends Div {
     private Placeholder placeholder;
     private ApiKeyAuthentication apiKeyAuthentication;
     private BasicAuthentication basicAuthentication;
+    private BearerAuthentication bearerAuthentication;
     private IAuthenticationType activeAuth;
     private HashMap<String, String> data;
 
@@ -43,6 +45,7 @@ public class RequestAuthentication extends Div {
         authType.add("NO_AUTH", "No Auth");
         authType.add("API_KEY", "API Key");
         authType.add("BASIC", "Basic Auth");
+        authType.add("BEARER", "Bearer Token");
         authType.selectIndex(0);
         authType.setWidth("100%");
         authType.setExpanse(Expanse.LARGE);
@@ -96,6 +99,19 @@ public class RequestAuthentication extends Div {
                 basicAuthentication.setData(data);
 
                 activeAuth = basicAuthentication;
+                break;
+            case "BEARER":
+                placeholder.setVisible(false);
+
+                if (bearerAuthentication == null) {
+                    bearerAuthentication = new BearerAuthentication();
+                    right.add(bearerAuthentication);
+                }
+
+                bearerAuthentication.setVisible(true);
+                bearerAuthentication.setData(data);
+
+                activeAuth = bearerAuthentication;
                 break;
             default:
                 placeholder.setVisible(true);

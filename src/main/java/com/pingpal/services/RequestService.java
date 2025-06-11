@@ -14,7 +14,6 @@ import com.google.gson.reflect.TypeToken;
 import com.pingpal.helpers.Env;
 import com.pingpal.helpers.RequestHandler;
 import com.pingpal.models.RequestModel;
-import com.webforj.App;
 import com.webforj.component.optiondialog.OptionDialog;
 
 public class RequestService {
@@ -37,9 +36,9 @@ public class RequestService {
             headers.put("Authorization", "Bearer " + getToken());
             request.setHeaders(headers);
 
-            App.console().log("Endpoint: " + BASE_URL + "/requests | Token: " + getToken(), true);
+            // App.console().log("Endpoint: " + BASE_URL + "/requests | Token: " + getToken(), true);
             HttpResponse<String> response = request.send();
-            App.console().log("Response: " + response.statusCode() + " " + response.body(), true);
+            // App.console().log("Response: " + response.statusCode() + " " + response.body(), true);
 
             Type listType = new TypeToken<List<RequestModel>>() {}.getType();
             return new Gson().fromJson(response.body(), listType);
@@ -161,12 +160,9 @@ public class RequestService {
         }
 
         final String BASE_URL = Env.get("PINGPAL_URL");
-        App.console().log("BASE_URL: " + BASE_URL, true);
         final String username = Env.get("PINGPAL_USERNAME");
-        App.console().log("username: " + username, true);
         final String password = Env.get("PINGPAL_PASSWORD");
-        App.console().log("password: " + password, true);
-
+        
         Map<String, String> bodyMap = new HashMap<>();
         bodyMap.put("username", username);
         bodyMap.put("password", password);
@@ -185,9 +181,9 @@ public class RequestService {
         headers.put("Content-Type", "application/json");
         request.setHeaders(headers);
 
-        App.console().log("Endpoint: " + BASE_URL + "/auth/login", true);
+        // App.console().log("Endpoint: " + BASE_URL + "/auth/login", true);
         HttpResponse<String> response = request.send();
-        App.console().log("Response: " + response.statusCode() + " " + response.body(), true);
+        // App.console().log("Response: " + response.statusCode() + " " + response.body(), true);
 
         if (response.statusCode() != 200) throw new RuntimeException("Login failed: " + response.body());
 

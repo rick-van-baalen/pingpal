@@ -34,11 +34,7 @@ public class RequestsManager extends Composite<FlexLayout> {
     public RequestsManager() {
         self.addClassName("requests-manager");
         self.setDirection(FlexDirection.COLUMN);
-        self.setMaxWidth("400px");
-        self.setWidth("100%");
-        self.setHeight("100%");
         self.setAlignment(FlexAlignment.START);
-        self.setPadding("10px");
 
         if (requestService == null) requestService = new RequestService();
 

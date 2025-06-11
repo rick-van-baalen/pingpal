@@ -196,6 +196,11 @@ div.jsoneditor-outer.has-main-menu-bar {
 
 .requests-manager {
     background-color: var(--dwc-color-primary);
+    overflow: hidden;
+    height: calc(100% - 20px);
+    padding: 10px;
+    min-width: 400px;
+    width: 400px;
 }
 
 .requests-manager-heading {

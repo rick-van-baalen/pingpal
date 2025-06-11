@@ -49,6 +49,7 @@ public class RequestView extends Composite<Div> implements DidEnterObserver {
         self.setWidth("100%");
         self.setHeight("calc(100% - 20px)");
         self.setStyle("padding", "10px");
+        self.setStyle("overflow", "hidden");
 
         loading = new Loading("Sending request...");
         loading.getSpinner().setTheme(Theme.PRIMARY);

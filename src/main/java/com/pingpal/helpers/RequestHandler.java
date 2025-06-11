@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.StringJoiner;
 
 import com.pingpal.views.Console;
+import com.webforj.component.optiondialog.OptionDialog;
 import com.webforj.environment.ObjectTable;
 
 import java.net.http.HttpRequest.BodyPublishers;
@@ -44,20 +45,24 @@ public class RequestHandler {
                 }
             }
             
-            if (authentication != null && authentication.containsKey("AUTH_TYPE")) {
-                String type = authentication.get("AUTH_TYPE");
+            if (authentication != null) {
+                String type = authentication.get("type");
                 switch (type) {
                     case "API_KEY":
-                        String key = authentication.get("KEY");
-                        String value = authentication.get("VALUE");
+                        String key = authentication.get("key");
+                        String value = authentication.get("value");
                         requestBuilder.header(key, value);
                         break;
                     case "BASIC":
-                        String username = authentication.get("USERNAME");
-                        String password = authentication.get("PASSWORD");
+                        String username = authentication.get("username");
+                        String password = authentication.get("password");
                         String credentials = username + ":" + password;
                         String encoded = Base64.getEncoder().encodeToString(credentials.getBytes());
                         requestBuilder.header("Authorization", "Basic " + encoded);
+                        break;
+                    case "BEARER":
+                        String token = authentication.get("token");
+                        requestBuilder.header("Authorization", "Bearer " + token);
                         break;
                 }
             }
