@@ -161,8 +161,11 @@ public class RequestService {
         }
 
         final String BASE_URL = Env.get("PINGPAL_URL");
+        App.console().log("BASE_URL: " + BASE_URL, true);
         final String username = Env.get("PINGPAL_USERNAME");
+        App.console().log("username: " + username, true);
         final String password = Env.get("PINGPAL_PASSWORD");
+        App.console().log("password: " + password, true);
 
         Map<String, String> bodyMap = new HashMap<>();
         bodyMap.put("username", username);
@@ -182,17 +185,16 @@ public class RequestService {
         headers.put("Content-Type", "application/json");
         request.setHeaders(headers);
 
+        App.console().log("Endpoint: " + BASE_URL + "/auth/login", true);
         HttpResponse<String> response = request.send();
-        if (response.statusCode() != 200) {
-            throw new RuntimeException("Login failed: " + response.body());
-        }
+        App.console().log("Response: " + response.statusCode() + " " + response.body(), true);
+
+        if (response.statusCode() != 200) throw new RuntimeException("Login failed: " + response.body());
 
         Map<String, Object> result = gson.fromJson(response.body(), Map.class);
         String newToken = (String) result.get("token");
 
-        if (newToken == null) {
-            throw new RuntimeException("No token in login response");
-        }
+        if (newToken == null) throw new RuntimeException("No token in login response");
 
         this.token = newToken;
         this.tokenExpiry = extractExpiryFromJwt(newToken);

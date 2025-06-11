@@ -40,6 +40,6 @@ public class Env {
 
     public static String get(String key) {
         String systemValue = System.getenv(key);
-        return systemValue != null ? systemValue : envVars.get(key);
+        return envVars.containsKey(key) ? envVars.get(key) : systemValue;
     }
 }
